@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --cream: #fefbf0;
+  --brand: #367fb6;
+  --body: #777171;
+  --charcoal: #2b2b2b;
+  /* Shared header height — the hero video sits flush below this. */
+  --header-h: 88px;
+}
+
+html {
+  /* Anchor jumps land below the sticky header instead of under it. */
+  scroll-padding-top: var(--header-h);
+}
+
+html,
+body {
+  background-color: var(--cream);
+  color: var(--charcoal);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+}
+
+/* Hide scrollbars on the mobile product carousel while keeping scroll */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* The hero video must never flash black/poster: it sits on cream until ready */
+.hero-video {
+  background-color: var(--cream);
+}
+
+/* The product images carry their own white background, so the panel is plain
+   white — this prevents any panel colour peeking around the image as a frame. */
+.product-panel {
+  background: #ffffff;
+}
