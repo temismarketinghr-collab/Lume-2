@@ -94,7 +94,7 @@ export default function Products() {
           <span className="block font-sans text-[48px] font-light uppercase leading-[56px] text-charcoal">
             Your Everyday Skin
           </span>
-          <span className="block font-sans text-[48px] font-light italic uppercase leading-[56px] text-brand">
+          <span className="text-shimmer block font-sans text-[48px] font-light italic uppercase leading-[56px] text-brand">
             Rejuvenation Device
           </span>
         </h2>

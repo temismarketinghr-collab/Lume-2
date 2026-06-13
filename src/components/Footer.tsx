@@ -6,7 +6,7 @@ const NAV_LINKS = [
   { label: "Device", href: "#collections" },
   { label: "Features", href: "#experience" },
   { label: "Process", href: "#process" },
-  { label: "Faq", href: "#science" },
+  { label: "FAQ", href: "#science" },
   { label: "Footer", href: "#footer" },
 ];
 
@@ -35,7 +35,7 @@ export default function Footer() {
       {/* Newsletter */}
       <div className="mx-auto max-w-3xl text-center">
         <h2 className="mx-auto font-sans text-[48px] font-light leading-[56px] text-charcoal">
-          <span className="italic text-brand">Discover</span> beauty launches
+          <span className="text-shimmer italic text-brand">Discover</span> beauty launches
           and self-care inspiration.
         </h2>
         <p className="mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-body">

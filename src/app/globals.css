@@ -7,8 +7,8 @@
   --brand: #367fb6;
   --body: #777171;
   --charcoal: #2b2b2b;
-  /* Shared header height — the hero video sits flush below this. */
-  --header-h: 88px;
+  /* Clearance below the floating header for anchor jumps. */
+  --header-h: 104px;
 }
 
 html {
@@ -46,4 +46,55 @@ body {
    white — this prevents any panel colour peeking around the image as a frame. */
 .product-panel {
   background: #ffffff;
+}
+
+/* --- Lightweight motion utilities (transform/opacity only, GPU-friendly) --- */
+@keyframes lume-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+.animate-float {
+  animation: lume-float 5.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes lume-shimmer {
+  to {
+    background-position: -200% center;
+  }
+}
+.text-shimmer {
+  /* inline-block + horizontal padding so the box covers the italic overhang
+     (background-clip:text otherwise crops the slanted glyph corners). */
+  display: inline-block;
+  padding-inline: 0.14em;
+  margin-inline: -0.14em;
+  background-image: linear-gradient(
+    100deg,
+    var(--brand) 38%,
+    #93c5e8 50%,
+    var(--brand) 62%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: lume-shimmer 6.5s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .text-shimmer {
+    animation: none !important;
+  }
+  .text-shimmer {
+    color: var(--brand);
+    -webkit-text-fill-color: var(--brand);
+  }
 }

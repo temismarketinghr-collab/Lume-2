@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Magnetic from "@/components/Magnetic";
 
 const NAV_LINKS = [
   { label: "Device", id: "collections" },
   { label: "Features", id: "experience" },
   { label: "Process", id: "process" },
-  { label: "Faq", id: "science" },
+  { label: "FAQ", id: "science" },
   { label: "Footer", id: "footer" },
 ];
 
@@ -35,11 +36,9 @@ export default function Navbar() {
           if (entry.isIntersecting) visible.add(entry.target.id);
           else visible.delete(entry.target.id);
         });
-        // Activate the first section (in nav order) currently in the band.
         const current = NAV_LINKS.find((l) => visible.has(l.id));
         if (current) setActiveId(current.id);
       },
-      // A thin band across the upper-middle of the viewport decides "active".
       { rootMargin: "-45% 0px -50% 0px", threshold: 0 },
     );
 
@@ -48,29 +47,28 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header
-      className={[
-        "sticky top-0 z-50 w-full bg-cream/95 backdrop-blur-md transition-shadow duration-500 ease-out",
-        scrolled
-          ? "border-b border-charcoal/10 shadow-[0_6px_24px_-18px_rgba(43,43,43,0.45)]"
-          : "border-b border-charcoal/[0.06]",
-      ].join(" ")}
-      style={{ height: "var(--header-h)" }}
-    >
-      <nav className="relative mx-auto flex h-full max-w-7xl items-center justify-between px-6 md:px-10">
+    <header className="fixed inset-x-0 top-4 z-50 px-4 md:top-5 md:px-6">
+      <nav
+        className={[
+          "relative mx-auto flex h-16 max-w-5xl items-center justify-between rounded-full pl-4 pr-3 backdrop-blur-md transition-all duration-500 ease-out md:pl-6 md:pr-4",
+          scrolled
+            ? "bg-cream/55 border border-charcoal/10 shadow-[0_12px_32px_-14px_rgba(43,43,43,0.40)]"
+            : "bg-cream/25 border border-white/30 shadow-[0_8px_30px_-14px_rgba(43,43,43,0.28)]",
+        ].join(" ")}
+      >
         {/* Left: logo */}
         <a href="#" aria-label="LUMÉ home" className="flex items-center">
           {/* logo.svg is referenced per spec; served from /public */}
           <img
             src="/logo.svg"
             alt="LUMÉ"
-            className="h-20 w-20 select-none"
+            className="h-12 w-12 select-none"
             draggable={false}
           />
         </a>
 
         {/* Center: navigation */}
-        <div className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-9 md:flex">
+        <div className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 md:flex">
           {NAV_LINKS.map((link) => {
             const active = activeId === link.id;
             return (
@@ -89,13 +87,15 @@ export default function Navbar() {
           })}
         </div>
 
-        {/* Right: SHOP NOW button */}
-        <a
-          href="#collections"
-          className="rounded-full bg-white px-7 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-brand shadow-[0_8px_24px_-10px_rgba(43,43,43,0.25)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glow"
-        >
-          Shop Now
-        </a>
+        {/* Right: SHOP NOW button (subtle magnetic) */}
+        <Magnetic strength={0.15}>
+          <a
+            href="#collections"
+            className="inline-block rounded-full bg-white px-6 py-2.5 text-xs font-semibold uppercase tracking-[0.18em] text-brand shadow-[0_8px_24px_-10px_rgba(43,43,43,0.25)] transition-all duration-300 hover:shadow-glow"
+          >
+            Shop Now
+          </a>
+        </Magnetic>
       </nav>
     </header>
   );

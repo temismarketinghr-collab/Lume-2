@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import BeforeAfter from "@/components/BeforeAfter";
 
 const ITEMS = [
   {
@@ -51,7 +52,7 @@ export default function Science() {
         <div>
           <h2 className="font-sans text-[48px] font-light leading-[56px] text-charcoal">
             The Science Behind Your{" "}
-            <span className="italic text-brand">Natural Glow</span>
+            <span className="text-shimmer italic text-brand">Natural Glow</span>
           </h2>
 
           <div className="mt-10">
@@ -97,20 +98,14 @@ export default function Science() {
           </div>
         </div>
 
-        {/* RIGHT: before / after image */}
+        {/* RIGHT: draggable before / after comparison */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="overflow-hidden rounded-[24px] shadow-card"
         >
-          <img
-            src="/FAQ/before-after.png"
-            alt="Before and after results of using the LUMÉ device"
-            className="block w-full"
-            draggable={false}
-          />
+          <BeforeAfter before="/FAQ/before.png" after="/FAQ/after.png" />
         </motion.div>
       </div>
     </section>

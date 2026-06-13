@@ -1,10 +1,26 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useReducedMotion,
+} from "framer-motion";
 
 export default function Showcase() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const reduced = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+  const rawY = useTransform(scrollYProgress, [0, 1], [50, -50]);
+  const deviceY = reduced ? 0 : rawY;
+
   return (
     <section
+      ref={sectionRef}
       id="experience"
       className="relative z-10 bg-cream px-6 pb-[140px] pt-0 md:px-10"
     >
@@ -23,7 +39,7 @@ export default function Showcase() {
               <br />
               Intelligent Skin
             </span>
-            <span className="block font-sans text-[48px] font-light italic uppercase leading-[56px] tracking-tight text-brand">
+            <span className="text-shimmer block font-sans text-[48px] font-light italic uppercase leading-[56px] tracking-tight text-brand">
               Rejuvenation
             </span>
           </h2>
@@ -43,7 +59,7 @@ export default function Showcase() {
           </div>
         </motion.div>
 
-        {/* RIGHT: complete annotated device image */}
+        {/* RIGHT: complete annotated device image (parallax) */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -51,10 +67,11 @@ export default function Showcase() {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
           className="mx-auto w-full max-w-[540px]"
         >
-          <img
+          <motion.img
+            style={{ y: deviceY }}
             src="/lifting-device/device.png"
             alt="LUMÉ neck & face lifting device — Red LED array, polished metal head frame, multi-axial joint, ergonomic power button"
-            className="block w-full"
+            className="block w-full will-change-transform"
             draggable={false}
           />
         </motion.div>

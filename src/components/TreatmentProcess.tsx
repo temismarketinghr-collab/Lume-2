@@ -1,6 +1,12 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useReducedMotion,
+} from "framer-motion";
 
 const STEPS = [
   {
@@ -22,15 +28,25 @@ const STEPS = [
 ];
 
 export default function TreatmentProcess() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const reduced = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+  const rawY = useTransform(scrollYProgress, [0, 1], [-30, 30]);
+  const lifestyleY = reduced ? 0 : rawY;
+
   return (
     <section
+      ref={sectionRef}
       id="process"
       className="relative z-10 bg-[#E9F4F9] px-6 py-20 md:px-10 md:py-28"
     >
       <div className="mx-auto max-w-7xl">
         {/* Title */}
         <h2 className="mx-auto mb-14 max-w-3xl text-center font-sans text-[34px] font-light leading-[42px] text-charcoal md:mb-20 md:text-[48px] md:leading-[56px]">
-          Your <span className="italic text-brand">Journey</span> To
+          Your <span className="text-shimmer italic text-brand">Journey</span> To
           Healthier-Looking Skin
         </h2>
 
@@ -70,12 +86,13 @@ export default function TreatmentProcess() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-            className="min-h-[320px] overflow-hidden rounded-[24px] shadow-card"
+            className="relative min-h-[320px] overflow-hidden rounded-[24px] shadow-card"
           >
-            <img
+            <motion.img
+              style={{ y: lifestyleY }}
               src="/Process/lifestyle.png"
               alt="A woman using the LUMÉ device alongside the full LUMÉ device collection"
-              className="h-full w-full object-cover"
+              className="absolute inset-x-0 top-[-12%] h-[124%] w-full object-cover will-change-transform"
               draggable={false}
             />
           </motion.div>

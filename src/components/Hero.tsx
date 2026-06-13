@@ -7,96 +7,148 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 /**
- * Scroll-synced hero video.
+ * Scroll-synced hero.
  *
- * - The <section> is 400vh tall; the video is sticky/pinned for its full height.
- * - GSAP ScrollTrigger maps scroll progress (0 -> 1) onto video.currentTime.
- * - The video element keeps a #FEFBF0 background and stays invisible until the
- *   first frame is decoded, so there is never a black/poster flash.
+ * Instead of scrubbing video.currentTime (which seeks from sparse keyframes and
+ * stutters on many devices), we drive an image sequence:
  *
- * An image-sequence fallback (/public/frames/frame-001..080.jpg) is supported by
- * a sibling module but only activates when those frames exist — see frame logic
- * intentionally omitted here because the asset folder is empty in this build.
+ * - A tiny fallback video (~720KB) shows instantly and is the reduced-motion
+ *   experience, so the hero is never blank/black.
+ * - 120 WebP frames are preloaded, then a <canvas> crossfades in and we draw the
+ *   frame matching scroll progress. No video seeking → smooth & consistent.
  */
+const FRAME_COUNT = 120;
+const framePath = (i: number) =>
+  `/frames/frame-${String(i).padStart(3, "0")}.webp`;
+
 export default function Hero() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [ready, setReady] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
 
   useEffect(() => {
-    const video = videoRef.current;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReducedMotion(mq.matches);
+    const onChange = () => setReducedMotion(mq.matches);
+    mq.addEventListener?.("change", onChange);
+    return () => mq.removeEventListener?.("change", onChange);
+  }, []);
+
+  useEffect(() => {
+    if (reducedMotion) return;
     const section = sectionRef.current;
-    if (!video || !section) return;
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (!section || !canvas || !ctx) return;
 
-    let tween: gsap.core.Tween | null = null;
-    let didSetup = false;
+    let trigger: ScrollTrigger | null = null;
+    let currentIndex = -1;
+    let disposed = false;
+    const images: HTMLImageElement[] = [];
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-    const setup = () => {
-      if (didSetup) return;
-      const duration = video.duration;
-      if (!duration || Number.isNaN(duration)) return;
-      didSetup = true;
+    const draw = (index: number, force = false) => {
+      const img = images[index];
+      if (!img || !img.complete || img.naturalWidth === 0) return;
+      if (!force && index === currentIndex) return;
+      currentIndex = index;
+      const cw = canvas.width;
+      const ch = canvas.height;
+      const scale = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
+      const dw = img.naturalWidth * scale;
+      const dh = img.naturalHeight * scale;
+      ctx.drawImage(img, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
+    };
 
-      // Reveal the video now that we can paint a real frame (kills the flash).
-      video.currentTime = 0.0001;
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+      draw(currentIndex < 0 ? 0 : currentIndex, true);
+    };
+
+    const start = () => {
+      if (disposed) return;
+      resize();
+      draw(0, true);
       setReady(true);
+      videoRef.current?.pause();
 
-      // Canonical scroll-scrub: a dummy playhead is tweened 0 -> duration, driven
-      // by ScrollTrigger's scrub, and every frame we copy it onto currentTime.
-      const playhead = { time: 0 };
-
-      tween = gsap.to(playhead, {
-        time: duration,
-        ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: "bottom bottom",
-          scrub: 0.6,
-          invalidateOnRefresh: true,
-        },
-        onUpdate: () => {
-          if (video.readyState >= 1) video.currentTime = playhead.time;
+      trigger = ScrollTrigger.create({
+        trigger: section,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 0.5,
+        onUpdate: (self) => {
+          const idx = Math.min(
+            FRAME_COUNT - 1,
+            Math.max(0, Math.round(self.progress * (FRAME_COUNT - 1))),
+          );
+          draw(idx);
         },
       });
-
       ScrollTrigger.refresh();
+      window.addEventListener("resize", resize);
     };
 
-    // Robust reveal: metadata can arrive before listeners attach (cached video)
-    // or be deferred (background tab), so we both check now and listen broadly.
-    const events = ["loadedmetadata", "loadeddata", "canplay"] as const;
-    events.forEach((e) => video.addEventListener(e, setup));
-    if (video.readyState >= 1) setup();
-    else if (video.readyState === 0) video.load();
-
-    // Final safety net in case no media event ever lands.
-    const poll = window.setInterval(() => {
-      if (didSetup) window.clearInterval(poll);
-      else if (video.readyState >= 1) setup();
-    }, 250);
+    // Preload every frame, then hand over to the canvas.
+    let loaded = 0;
+    for (let i = 1; i <= FRAME_COUNT; i++) {
+      const img = new Image();
+      img.decoding = "async";
+      img.onload = img.onerror = () => {
+        loaded += 1;
+        if (loaded === FRAME_COUNT) start();
+      };
+      img.src = framePath(i);
+      images[i - 1] = img;
+    }
 
     return () => {
-      events.forEach((e) => video.removeEventListener(e, setup));
-      window.clearInterval(poll);
-      tween?.scrollTrigger?.kill();
-      tween?.kill();
+      disposed = true;
+      trigger?.kill();
+      window.removeEventListener("resize", resize);
     };
-  }, []);
+  }, [reducedMotion]);
 
   return (
     <section ref={sectionRef} className="relative h-[400vh] w-full bg-cream">
-      <div className="sticky top-[var(--header-h)] h-[calc(100vh-var(--header-h))] w-full overflow-hidden bg-cream">
+      <div className="sticky top-0 h-screen w-full overflow-hidden bg-cream">
+        {/* Lightweight base video: instant paint + reduced-motion experience */}
         <video
           ref={videoRef}
-          src="/hero.mp4"
+          src="/hero-fallback.mp4"
+          autoPlay
+          loop
           muted
           playsInline
-          preload="metadata"
-          className={[
-            "hero-video absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-out",
-            ready ? "opacity-100" : "opacity-0",
-          ].join(" ")}
+          preload="auto"
+          className="hero-video absolute inset-0 h-full w-full object-cover"
+        />
+
+        {/* Frame-sequence canvas: crossfades in once frames are ready */}
+        {!reducedMotion && (
+          <canvas
+            ref={canvasRef}
+            aria-hidden="true"
+            className={[
+              "absolute inset-0 h-full w-full transition-opacity duration-700 ease-out",
+              ready ? "opacity-100" : "opacity-0",
+            ].join(" ")}
+          />
+        )}
+
+        {/* Soft cream scrim — fades only the left edge so the peripheral video
+            content recedes instead of distracting. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(to right, var(--cream) 0%, rgba(254,251,240,0.4) 13%, rgba(254,251,240,0) 32%)",
+          }}
         />
       </div>
     </section>
