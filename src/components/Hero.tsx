@@ -56,7 +56,10 @@ export default function Hero() {
       currentIndex = index;
       const cw = canvas.width;
       const ch = canvas.height;
-      const scale = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
+      // "contain" — show the whole frame (never crop), cream fills any gaps.
+      ctx.fillStyle = "#FEFBF0";
+      ctx.fillRect(0, 0, cw, ch);
+      const scale = Math.min(cw / img.naturalWidth, ch / img.naturalHeight);
       const dw = img.naturalWidth * scale;
       const dh = img.naturalHeight * scale;
       ctx.drawImage(img, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
@@ -125,7 +128,7 @@ export default function Hero() {
           muted
           playsInline
           preload="auto"
-          className="hero-video absolute inset-0 h-full w-full object-cover"
+          className="hero-video absolute inset-0 h-full w-full object-contain"
         />
 
         {/* Frame-sequence canvas: crossfades in once frames are ready */}
@@ -139,17 +142,6 @@ export default function Hero() {
             ].join(" ")}
           />
         )}
-
-        {/* Soft cream scrim — fades only the left edge so the peripheral video
-            content recedes instead of distracting. */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(to right, var(--cream) 0%, rgba(254,251,240,0.4) 13%, rgba(254,251,240,0) 32%)",
-          }}
-        />
       </div>
     </section>
   );
