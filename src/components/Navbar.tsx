@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import Magnetic from "@/components/Magnetic";
 
 const NAV_LINKS = [
@@ -14,6 +15,7 @@ const NAV_LINKS = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [activeId, setActiveId] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -57,7 +59,7 @@ export default function Navbar() {
         ].join(" ")}
       >
         {/* Left: logo */}
-        <a href="#" aria-label="LUMÉ home" className="flex items-center">
+        <Link href="/" aria-label="LUMÉ home" className="flex items-center">
           {/* logo.svg is referenced per spec; served from /public */}
           <img
             src="/logo.svg"
@@ -65,16 +67,16 @@ export default function Navbar() {
             className="h-12 w-12 select-none"
             draggable={false}
           />
-        </a>
+        </Link>
 
         {/* Center: navigation */}
         <div className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 md:flex">
           {NAV_LINKS.map((link) => {
             const active = activeId === link.id;
             return (
-              <a
+              <Link
                 key={link.id}
-                href={`#${link.id}`}
+                href={`/#${link.id}`}
                 aria-current={active ? "true" : undefined}
                 className={[
                   "text-[15px] font-medium tracking-tight transition-colors duration-300",
@@ -82,21 +84,75 @@ export default function Navbar() {
                 ].join(" ")}
               >
                 {link.label}
-              </a>
+              </Link>
             );
           })}
         </div>
 
-        {/* Right: SHOP NOW button (subtle magnetic) */}
-        <Magnetic strength={0.15}>
-          <a
-            href="#collections"
-            className="inline-block rounded-full bg-white px-6 py-2.5 text-xs font-semibold uppercase tracking-[0.18em] text-brand shadow-[0_8px_24px_-10px_rgba(43,43,43,0.25)] transition-all duration-300 hover:shadow-glow"
+        {/* Right: SHOP NOW (desktop) */}
+        <div className="hidden md:block">
+          <Magnetic strength={0.15}>
+            <Link
+              href="/shop"
+              className="inline-block rounded-full bg-white px-6 py-2.5 text-xs font-semibold uppercase tracking-[0.18em] text-brand shadow-[0_8px_24px_-10px_rgba(43,43,43,0.25)] transition-all duration-300 hover:shadow-glow"
+            >
+              Shop Now
+            </Link>
+          </Magnetic>
+        </div>
+
+        {/* Hamburger (mobile) */}
+        <button
+          type="button"
+          onClick={() => setMenuOpen((v) => !v)}
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={menuOpen}
+          className="flex h-10 w-10 items-center justify-center rounded-full text-charcoal transition-colors hover:text-brand md:hidden"
+        >
+          {menuOpen ? (
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+              <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+          ) : (
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+              <path d="M4 7h16M4 12h16M4 17h16" />
+            </svg>
+          )}
+        </button>
+      </nav>
+
+      {/* Mobile menu */}
+      {menuOpen && (
+        <div className="mx-auto mt-2 max-w-5xl overflow-hidden rounded-3xl border border-white/40 bg-cream/95 p-3 shadow-[0_18px_44px_-16px_rgba(43,43,43,0.4)] backdrop-blur-md md:hidden">
+          <nav className="flex flex-col">
+            {NAV_LINKS.map((link) => {
+              const active = activeId === link.id;
+              return (
+                <Link
+                  key={link.id}
+                  href={`/#${link.id}`}
+                  onClick={() => setMenuOpen(false)}
+                  className={[
+                    "rounded-2xl px-4 py-3 text-[15px] font-medium tracking-tight transition-colors",
+                    active
+                      ? "text-brand"
+                      : "text-charcoal/80 hover:bg-white/60 hover:text-brand",
+                  ].join(" ")}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+          </nav>
+          <Link
+            href="/shop"
+            onClick={() => setMenuOpen(false)}
+            className="mt-2 block rounded-full bg-brand px-6 py-3 text-center text-xs font-semibold uppercase tracking-[0.18em] text-white"
           >
             Shop Now
-          </a>
-        </Magnetic>
-      </nav>
+          </Link>
+        </div>
+      )}
     </header>
   );
 }

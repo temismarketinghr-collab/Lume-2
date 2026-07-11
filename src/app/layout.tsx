@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
+import { CartProvider } from "@/components/CartContext";
+import FloatingCart from "@/components/FloatingCart";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -29,7 +31,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${cormorant.variable} ${inter.variable}`}>
-      <body className="bg-cream text-charcoal antialiased">{children}</body>
+      <body className="bg-cream text-charcoal antialiased">
+        <CartProvider>
+          {children}
+          <FloatingCart />
+        </CartProvider>
+      </body>
     </html>
   );
 }

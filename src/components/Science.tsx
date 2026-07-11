@@ -62,7 +62,7 @@ export default function Science() {
                 <div key={item.title} className="border-b border-charcoal/10">
                   <button
                     type="button"
-                    onClick={() => setOpen(isOpen ? -1 : i)}
+                    onClick={() => setOpen(i)}
                     aria-expanded={isOpen}
                     className="flex w-full items-center justify-between gap-4 py-5 text-left"
                   >

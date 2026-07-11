@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 const NAV_LINKS = [
-  { label: "Device", href: "#collections" },
-  { label: "Features", href: "#experience" },
-  { label: "Process", href: "#process" },
-  { label: "FAQ", href: "#science" },
-  { label: "Footer", href: "#footer" },
+  { label: "Device", href: "/#collections" },
+  { label: "Features", href: "/#experience" },
+  { label: "Process", href: "/#process" },
+  { label: "FAQ", href: "/#science" },
+  { label: "Footer", href: "/#footer" },
 ];
 
 const SOCIALS = [
@@ -71,25 +72,25 @@ export default function Footer() {
       <div className="mx-auto mt-16 max-w-7xl rounded-[24px] bg-white px-8 py-10 md:px-12 md:py-11">
         <div className="flex flex-col items-center gap-8 md:flex-row md:justify-between md:gap-6">
           {/* Logo */}
-          <a href="#" aria-label="LUMÉ home" className="flex items-center">
+          <Link href="/" aria-label="LUMÉ home" className="flex items-center">
             <img
               src="/logo.svg"
               alt="LUMÉ"
               className="h-16 w-16 select-none"
               draggable={false}
             />
-          </a>
+          </Link>
 
           {/* Nav */}
           <nav className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
             {NAV_LINKS.map((link) => (
-              <a
+              <Link
                 key={link.label}
                 href={link.href}
                 className="text-[15px] font-medium tracking-tight text-charcoal/80 transition-colors duration-300 hover:text-brand"
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
           </nav>
 

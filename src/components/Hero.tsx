@@ -55,10 +55,14 @@ export default function Hero() {
       currentIndex = index;
       const cw = canvas.width;
       const ch = canvas.height;
-      // "contain" — show the whole frame (never crop), cream fills any gaps.
       ctx.fillStyle = "#FEFBF0";
       ctx.fillRect(0, 0, cw, ch);
-      const scale = Math.min(cw / img.naturalWidth, ch / img.naturalHeight);
+      // Mobile fills the whole screen (cover); desktop shows the full frame
+      // (contain, never crops), with cream filling any gaps.
+      const cover = window.innerWidth < 768;
+      const scale = cover
+        ? Math.max(cw / img.naturalWidth, ch / img.naturalHeight)
+        : Math.min(cw / img.naturalWidth, ch / img.naturalHeight);
       const dw = img.naturalWidth * scale;
       const dh = img.naturalHeight * scale;
       ctx.drawImage(img, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
@@ -123,7 +127,7 @@ export default function Hero() {
           src="/frames/frame-001.webp"
           alt=""
           aria-hidden="true"
-          className="hero-video absolute inset-0 h-full w-full object-contain"
+          className="hero-video absolute inset-0 h-full w-full object-cover md:object-contain"
           draggable={false}
         />
 
