@@ -24,7 +24,6 @@ const framePath = (i: number) =>
 export default function Hero() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const [ready, setReady] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
 
@@ -77,7 +76,6 @@ export default function Hero() {
       resize();
       draw(0, true);
       setReady(true);
-      videoRef.current?.pause();
 
       trigger = ScrollTrigger.create({
         trigger: section,
@@ -119,16 +117,14 @@ export default function Hero() {
   return (
     <section ref={sectionRef} className="relative h-[400vh] w-full bg-cream">
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-cream">
-        {/* Lightweight base video: instant paint + reduced-motion experience */}
-        <video
-          ref={videoRef}
-          src="/hero-fallback.mp4"
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
+        {/* Static poster (first frame) — shown on entry; the hero only moves on
+            scroll, never autoplays. */}
+        <img
+          src="/frames/frame-001.webp"
+          alt=""
+          aria-hidden="true"
           className="hero-video absolute inset-0 h-full w-full object-contain"
+          draggable={false}
         />
 
         {/* Frame-sequence canvas: crossfades in once frames are ready */}
