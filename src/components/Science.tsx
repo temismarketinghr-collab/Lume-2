@@ -50,7 +50,7 @@ export default function Science() {
       <div className="mx-auto grid max-w-7xl items-center gap-12 md:grid-cols-2 md:gap-16">
         {/* LEFT: title + accordion */}
         <div>
-          <h2 className="font-sans text-[48px] font-light leading-[56px] text-charcoal">
+          <h2 className="font-sans text-[34px] font-light leading-[42px] text-charcoal md:text-[48px] md:leading-[56px]">
             The Science Behind Your{" "}
             <span className="text-shimmer italic text-brand">Natural Glow</span>
           </h2>

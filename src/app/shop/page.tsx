@@ -17,10 +17,7 @@ export default function ShopPage() {
       <section className="px-6 pb-24 pt-[150px] md:px-10 md:pb-32 md:pt-[190px]">
         <div className="mx-auto max-w-7xl">
           {/* Heading */}
-          <p className="text-center text-[12px] font-semibold uppercase tracking-[0.28em] text-brand">
-            The Collection
-          </p>
-          <h1 className="mx-auto mt-4 max-w-2xl text-center font-sans text-[40px] font-light leading-[46px] text-charcoal md:text-[48px] md:leading-[56px]">
+          <h1 className="mx-auto max-w-2xl text-center font-sans text-[30px] font-light uppercase leading-[40px] tracking-tight text-charcoal md:text-[48px] md:leading-[56px]">
             Shop the{" "}
             <span className="text-shimmer italic text-brand">Ritual</span>
           </h1>
@@ -30,7 +27,7 @@ export default function ShopPage() {
           </p>
 
           {/* Product grid */}
-          <div className="mt-16 grid gap-6 sm:grid-cols-2 md:gap-8 lg:grid-cols-3">
+          <div className="mt-16 grid grid-cols-2 gap-4 sm:gap-6 md:gap-8 lg:grid-cols-3">
             {products.map((product) => (
               <ShopCard key={product.name} product={product} />
             ))}

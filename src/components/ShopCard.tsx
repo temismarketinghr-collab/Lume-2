@@ -1,16 +1,15 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import type { Product } from "@/lib/products";
 import { useCart } from "@/components/CartContext";
 
 export default function ShopCard({ product }: { product: Product }) {
-  const { add } = useCart();
-  const [added, setAdded] = useState(false);
+  const { add, items } = useCart();
+  const inCart = items.find((it) => it.product.name === product.name);
 
   return (
-    <article className="group flex flex-col rounded-card bg-white p-6 shadow-card transition-all duration-500 ease-out hover:-translate-y-1.5 hover:shadow-glow">
+    <article className="group flex flex-col rounded-card bg-white p-4 shadow-card transition-all duration-500 ease-out hover:-translate-y-1.5 hover:shadow-glow md:p-6">
       {/* Clickable area → product detail page */}
       <Link
         href={`/shop/${product.slug}`}
@@ -50,19 +49,16 @@ export default function ShopCard({ product }: { product: Product }) {
       {/* Add to cart (separate — does not navigate) */}
       <button
         type="button"
-        onClick={() => {
-          add(product);
-          setAdded(true);
-        }}
+        onClick={() => add(product)}
         aria-live="polite"
         className={[
-          "mt-5 w-full rounded-full py-3.5 text-xs font-semibold uppercase tracking-[0.18em] transition-all duration-300",
-          added
+          "mt-5 w-full rounded-full py-3 text-[11px] font-semibold uppercase tracking-[0.06em] transition-all duration-300 md:py-3.5 md:text-xs md:tracking-[0.18em]",
+          inCart
             ? "bg-brand/10 text-brand"
             : "bg-brand text-white hover:brightness-110",
         ].join(" ")}
       >
-        {added ? "Added ✓" : "Add to Cart"}
+        {inCart ? `Added · ${inCart.qty}` : "Add to Cart"}
       </button>
     </article>
   );

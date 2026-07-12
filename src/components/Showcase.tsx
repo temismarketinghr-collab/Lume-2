@@ -34,12 +34,12 @@ export default function Showcase() {
           className="flex flex-col"
         >
           <h2>
-            <span className="block font-sans text-[48px] font-light uppercase leading-[56px] tracking-tight text-charcoal">
-              Experience
-              <br />
+            <span className="block font-sans text-[30px] font-light uppercase leading-[40px] tracking-tight text-charcoal md:text-[48px] md:leading-[56px]">
+              Experience{" "}
+              <br className="hidden md:inline" />
               Intelligent Skin
             </span>
-            <span className="text-shimmer block font-sans text-[48px] font-light italic uppercase leading-[56px] tracking-tight text-brand">
+            <span className="text-shimmer block font-sans text-[30px] font-light italic uppercase leading-[40px] tracking-tight text-brand md:text-[48px] md:leading-[56px]">
               Rejuvenation
             </span>
           </h2>
@@ -49,7 +49,7 @@ export default function Showcase() {
             designed for everyday glow, lift, and skin confidence.
           </p>
 
-          <div className="mt-10 max-w-sm overflow-hidden rounded-[18px] shadow-card">
+          <div className="mt-10 w-full overflow-hidden rounded-[18px] shadow-card md:max-w-sm">
             <img
               src="/lifting-device/woman.png"
               alt="A woman using the LUMÉ facial rejuvenation device"

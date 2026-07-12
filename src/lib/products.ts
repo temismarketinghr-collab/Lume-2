@@ -58,6 +58,54 @@ export const products: Product[] = [
       "Clinically-inspired wavelengths",
     ],
   },
+  {
+    slug: "skin-spatula",
+    name: "Skin Spatula",
+    price: "$45",
+    tag: "New Arrival",
+    image: "/products/skin-spatula.png",
+    panel: "product-panel",
+    description:
+      "High-frequency ultrasonic vibration gently exfoliates and lifts — sweeping away dead cells and impurities while helping serums absorb for smoother, refreshed skin.",
+    features: [
+      "Cleaning · Lifting · Moisturizing modes",
+      "Stainless-steel spatula tip",
+      "High-frequency ultrasonic waves",
+      "USB-C rechargeable",
+    ],
+  },
+  {
+    slug: "eye-care-pen",
+    name: "Eye Care Pen",
+    price: "$25",
+    tag: "New Arrival",
+    image: "/products/eye-care-pen.png",
+    panel: "product-panel",
+    description:
+      "Gentle warmth and micro-vibration de-puff and smooth the delicate eye area — easing the look of fine lines, dark circles, and morning puffiness.",
+    features: [
+      "Warmth + micro-vibration",
+      "Rounded metal massage tip",
+      "Targeted eye & lip care",
+      "USB-C rechargeable",
+    ],
+  },
+  {
+    slug: "lifting-roller",
+    name: "Lifting Roller",
+    price: "$39",
+    tag: "Best Seller",
+    image: "/products/lifting-roller.png",
+    panel: "product-panel",
+    description:
+      "Dual microcurrent roller heads glide along your contours to tone, firm, and sculpt — with UP, SLIM, and BODY modes for the face and body.",
+    features: [
+      "Dual roller heads",
+      "UP · SLIM · BODY modes",
+      "Microcurrent toning",
+      "Face & body use",
+    ],
+  },
 ];
 
 export const getProduct = (slug: string) =>

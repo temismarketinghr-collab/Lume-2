@@ -35,7 +35,7 @@ export default function Footer() {
     >
       {/* Newsletter */}
       <div className="mx-auto max-w-3xl text-center">
-        <h2 className="mx-auto font-sans text-[48px] font-light leading-[56px] text-charcoal">
+        <h2 className="mx-auto font-sans text-[34px] font-light leading-[42px] text-charcoal md:text-[48px] md:leading-[56px]">
           <span className="text-shimmer italic text-brand">Discover</span> beauty launches
           and self-care inspiration.
         </h2>
